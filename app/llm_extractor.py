@@ -144,28 +144,45 @@ def _extract_doc_type(text: str) -> str:
     """Detect document type from text."""
     text_lower = text.lower()
     
-    if any(word in text_lower for word in ["invoice", "bill", "facture"]):
+    # Check for explicit document type labels
+    if re.search(r'\binvoice\b', text_lower):
         return "invoice"
-    elif any(word in text_lower for word in ["receipt", "reçu"]):
+    elif re.search(r'\breceipt\b', text_lower):
         return "receipt"
-    elif any(word in text_lower for word in ["contract", "agreement"]):
+    elif re.search(r'\bcontract\b|\bagreement\b', text_lower):
         return "contract"
-    else:
-        return "other"
+    
+    # Heuristics: if it has line items and totals, likely an invoice/receipt
+    has_items = bool(re.search(r'\d+x\s+[A-Za-z]', text)) or bool(re.search(r'quantity|qty|items', text_lower))
+    has_total = bool(re.search(r'total:?\s*\$?\s*[\d,]+\.?\d*', text_lower))
+    
+    if has_items and has_total:
+        return "receipt"
+    
+    return "other"
 
 
 def _extract_vendor(text: str) -> Optional[str]:
     """Extract vendor/company name from text."""
+    lines = text.strip().split('\n')
+    
     # Look for common patterns
     patterns = [
         r"(?:from|vendor|seller):\s*([A-Z][A-Za-z\s&.,]+?)(?:\n|$)",
-        r"^([A-Z][A-Za-z\s&.,]{3,30})",  # First line often contains vendor
     ]
     
     for pattern in patterns:
-        match = re.search(pattern, text, re.MULTILINE)
+        match = re.search(pattern, text, re.MULTILINE | re.IGNORECASE)
         if match:
             return match.group(1).strip()
+    
+    # Try to get the first meaningful line (skip "INVOICE" or similar headers)
+    for line in lines[:5]:  # Check first 5 lines
+        line = line.strip()
+        if len(line) > 3 and line.upper() not in ['INVOICE', 'RECEIPT', 'BILL']:
+            # Look for company-like names (title case or all caps, reasonable length)
+            if re.match(r'^[A-Z][A-Za-z\s&.,]{2,40}$', line):
+                return line
     
     return None
 

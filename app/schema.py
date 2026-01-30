@@ -1,7 +1,7 @@
 """Pydantic schemas for data validation."""
 from typing import Optional, List
 from datetime import datetime
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class LineItem(BaseModel):
@@ -22,7 +22,8 @@ class ExtractedData(BaseModel):
     currency: Optional[str] = "USD"
     line_items: List[LineItem] = Field(default_factory=list)
     
-    @validator('doc_type')
+    @field_validator('doc_type')
+    @classmethod
     def validate_doc_type(cls, v):
         """Ensure doc_type is not empty."""
         if not v or not v.strip():

@@ -1,9 +1,9 @@
 {
   "doc_type": "receipt",
-  "vendor": "Coffee Shop",
+  "vendor": "COFFEE SHOP",
   "invoice_number": null,
   "invoice_date": "2024-01-30",
-  "total_amount": 15.75,
+  "total_amount": 17.01,
   "currency": "USD",
   "line_items": []
 }
