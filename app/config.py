@@ -23,6 +23,12 @@ class Settings(BaseSettings):
     
     # OCR Configuration
     tesseract_cmd: str = os.getenv("TESSERACT_CMD", "/usr/bin/tesseract")
+
+    # API Security & Production
+    api_key: str = os.getenv("API_KEY", "change-me-in-production")
+    rate_limit_requests: int = int(os.getenv("RATE_LIMIT_REQUESTS", "100"))
+    max_file_size_mb: int = int(os.getenv("MAX_FILE_SIZE_MB", "50"))
+    enable_auth: bool = os.getenv("ENABLE_AUTH", "true").lower() == "true"
     
     model_config = ConfigDict(env_file=".env")
 

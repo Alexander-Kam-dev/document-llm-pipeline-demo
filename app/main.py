@@ -34,7 +34,7 @@ async def root():
 async def health_check():
     """
     Health check endpoint.
-    Returns current configuration and service status.
+    Returns current configuration and ser    python cli.py samples/native-text-invoice.pdf --mode rulesvice status.
     """
     return {
         "status": "healthy",

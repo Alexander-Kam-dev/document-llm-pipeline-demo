@@ -1,5 +1,5 @@
 """Pydantic schemas for data validation."""
-from typing import Optional, List
+from typing import Optional, List, Any
 from datetime import datetime
 from pydantic import BaseModel, Field, field_validator
 
@@ -21,7 +21,7 @@ class ExtractedData(BaseModel):
     total_amount: Optional[float] = None
     currency: Optional[str] = "USD"
     line_items: List[LineItem] = Field(default_factory=list)
-    
+
     @field_validator('doc_type')
     @classmethod
     def validate_doc_type(cls, v):
@@ -45,3 +45,18 @@ class DocumentResponse(BaseModel):
     """Response model for document processing."""
     metadata: DocumentMetadata
     extracted_data: Optional[ExtractedData] = None
+
+
+class ErrorResponse(BaseModel):
+    """Standard error response envelope."""
+    success: bool = False
+    error: str = Field(..., description="User-friendly error message")
+    detail: Optional[str] = Field(None, description="Technical details")
+    request_id: Optional[str] = Field(None, description="Request tracking ID")
+
+
+class SuccessResponse(BaseModel):
+    """Wrapper for successful responses."""
+    success: bool = True
+    data: Any = Field(..., description="Response data")
+    request_id: Optional[str] = Field(None, description="Request tracking ID")
