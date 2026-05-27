@@ -1,0 +1,22 @@
+{
+  "doc_type": "invoice",
+  "vendor": "Acme Corporation",
+  "invoice_number": "INV-2024-001",
+  "invoice_date": "2024-01-15",
+  "total_amount": 1250.0,
+  "currency": "USD",
+  "line_items": [
+    {
+      "description": "Professional Services - January 2024",
+      "quantity": 40.0,
+      "unit_price": 25.0,
+      "total": 1000.0
+    },
+    {
+      "description": "Cloud Hosting Services",
+      "quantity": 1.0,
+      "unit_price": 250.0,
+      "total": 250.0
+    }
+  ]
+}

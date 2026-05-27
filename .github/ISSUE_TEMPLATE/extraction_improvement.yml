@@ -1,0 +1,71 @@
+name: "Extraction improvement"
+description: "Improve extraction quality for invoices/receipts (prompting/parsing/normalization)."
+labels: ["extraction"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for *measurable* extraction improvements.
+
+        Tip: add/attach a PDF under `samples/` and a matching golden JSON under `samples/expected/`.
+
+  - type: input
+    id: sample_pdf
+    attributes:
+      label: Sample PDF
+      description: "Path to a sample PDF in the repo (or describe where to get it)."
+      placeholder: "samples/native-text-invoice.pdf"
+    validations:
+      required: true
+
+  - type: input
+    id: expected_json
+    attributes:
+      label: Golden expected JSON
+      description: "Path to expected JSON in the repo."
+      placeholder: "samples/expected/native-text-invoice.json"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Extraction mode
+      options:
+        - llm
+        - rules
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong today?
+      description: "Describe the current incorrect output and what it should be."
+      placeholder: |
+        - vendor is null but should be "Acme Corporation"
+        - invoice_date is "01/15/2024" but should be normalized to "2024-01-15"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: "Be specific and testable."
+      placeholder: |
+        - `python cli.py eval --mode llm` reports PASS for this sample
+        - No regression for existing samples
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / constraints
+      placeholder: |
+        - Ollama-only
+        - Keep changes localized
+        - Avoid adding new dependencies if possible
+    validations:
+      required: false
